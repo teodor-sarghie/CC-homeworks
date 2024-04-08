@@ -1,7 +1,7 @@
 from django.urls import path
-from . import views
+from file_searcher.views import home, AddFileView
 
 urlpatterns = [
-    path("", views.home, name="home"),
-    path("add_file/", views.add_file, name="add_file"),
+    path("", home, name="home-page"),
+    path("add_file/", AddFileView.as_view(), name="add-file"),
 ]

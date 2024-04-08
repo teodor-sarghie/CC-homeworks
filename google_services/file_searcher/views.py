@@ -1,36 +1,27 @@
-from django.shortcuts import render
-import requests
-import os
-from django.http import StreamingHttpResponse
-from django.http import (
-    HttpResponse,
-    HttpResponseRedirect,
-    HttpResponseNotFound,
-    HttpResponseServerError,
-)
-
 from Drives.GoogleDrive import GoogleDrive
-import pprint
-import json
-from django.conf import settings
-from datetime import datetime
+from django.views.generic.edit import FormView
+from django.shortcuts import render
+from django.urls import reverse_lazy
+from file_searcher.forms import FileUploadForm
 
 
 def home(request):
-    return render(request, "home.html")
+    return render(request, "index.html")
 
 
-def add_file(request):
-    msg = ""
-    if request.method == "POST":
-        msg = ""
-    if request.method == "POST":
-        uploaded_file = request.FILES.get("file")
+class AddFileView(FormView):
+    template_name = "file_searcher/add_file.html"
+    form_class = FileUploadForm
+    success_url = reverse_lazy("add-file")
+
+    def form_valid(self, form):
+        uploaded_file = self.request.FILES.get("file")
         if uploaded_file:
             gd = GoogleDrive()
             gd.connect()
             file_id = gd.upload_file_directly(
                 uploaded_file, uploaded_file.name, mime_type=uploaded_file.content_type
             )
-            msg = file_id
-    return render(request, "add_file.html", {"msg": msg})
+            self.request.session["file_upload_msg"] = file_id
+            print(file_id, "FILE")
+        return super().form_valid(form)
