@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Event Details</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        .event {
+            margin-bottom: 20px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .event-details span {
+            display: block;
+            margin-bottom: 10px;
+        }
+        .btn {
+            padding: 10px 15px;
+            text-decoration: none;
+            color: white;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+        .btn-modify {
+            background-color: #f0ad4e; /* Bootstrap's button-warning color */
+        }
+        .btn-delete {
+            background-color: #d9534f; /* Bootstrap's button-danger color */
+        }
+        a{
+            color:#d9534f;
+        }
+    </style>
+</head>
+<body>
+    <h1>Event Details</h1>
+    <div class="event">
+        <h2>{{ event.name }}</h2>
+        <div class="event-details">
+            <span><strong>Location:</strong> {{ event.location }}</span>
+            <span><strong>Date:</strong> {{ event.date }}</span>
+            <span><strong>Participants:</strong> {{ event.participants }}</span>
+            <span><strong>Program:</strong> {{ event.program }}</span>
+
+            <span><strong>Latitudine si longitudine:</strong> {{ vreme.lat }}, {{vreme.lon}}</span>
+            <span><strong>Temperatura minima:</strong> {{ vreme.values.temperatureMin }} </span>
+            <span><strong>Temperatura maxima:</strong>{{vreme.values.temperatureMax}} </span>
+            <span><strong>Viteza Medie Vant :</strong> {{vreme.values.windSpeedAvg}} Km/h</span>
+
+            <a href="{% url 'download' event.program_id %}" >Download Program</a>
+            <a href="{% url 'delete_event' event.id %}">Delete event</a>
+        </div>
+    </div>
+    
+</body>
+</html>
