@@ -36,7 +36,7 @@ class User(AbstractUser):
     username = None
     email = models.EmailField("email address", unique=True, max_length=256)
     token = models.CharField(
-        max_length=1024, null=True, blank=True, verbose_name="Token"
+        max_length=2048, null=True, blank=True, verbose_name="Token"
     )
     expiration_time = models.DateTimeField(
         null=True, blank=True, verbose_name="Expiration time"

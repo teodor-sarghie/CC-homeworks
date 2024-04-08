@@ -1,7 +1,6 @@
 import os.path
 import io
-from pathlib import Path
-
+from django.conf import settings
 
 import google.auth
 from google.auth.transport.requests import Request
@@ -21,25 +20,27 @@ SCOPES = [
 
 
 class GoogleDrive:
-    def connect(self):
+    def __init__(self, user):
+        self.user = user
         self.creds = None
-        print("AICI")
-        if os.path.exists("Drives/token.json"):
-            self.creds = Credentials.from_authorized_user_file(
-                "Drives/token.json", SCOPES
-            )
+
+    def connect(self):
+
+        if self.user.token:
+            self.creds = Credentials.from_authorized_user_info(eval(self.user.token), SCOPES)
 
         if not self.creds or not self.creds.valid:
             if self.creds and self.creds.expired and self.creds.refresh_token:
                 self.creds.refresh(Request())
             else:
                 flow = InstalledAppFlow.from_client_secrets_file(
-                    "Drives/credentials.json", SCOPES
+                    os.path.join(settings.BASE_DIR, 'Drives/credentials.json'), SCOPES
                 )
                 self.creds = flow.run_local_server(port=0)
 
-            with open("Drives/token.json", "w") as token:
-                token.write(self.creds.to_json())
+            self.user.token = self.creds.to_json()
+            self.user.expiration_time = self.creds.expiry
+            self.user.save()
 
     def get_all_files(self):
         files_dict = {}
