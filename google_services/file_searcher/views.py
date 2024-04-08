@@ -1,15 +1,17 @@
-from Drives.GoogleDrive import GoogleDrive
 from django.views.generic.edit import FormView
 from django.shortcuts import render
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
+
 from file_searcher.forms import FileUploadForm
+from Drives.GoogleDrive import GoogleDrive
 
 
 def home(request):
     return render(request, "index.html")
 
 
-class AddFileView(FormView):
+class AddFileView(LoginRequiredMixin, FormView):
     template_name = "file_searcher/add_file.html"
     form_class = FileUploadForm
     success_url = reverse_lazy("add-file")
