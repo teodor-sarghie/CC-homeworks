@@ -2,5 +2,5 @@ from django.apps import AppConfig
 
 
 class FileSearcherConfig(AppConfig):
-    default_auto_field = 'django.db.models.BigAutoField'
-    name = 'file_searcher'
+    default_auto_field = "django.db.models.BigAutoField"
+    name = "file_searcher"

@@ -1,0 +1,6 @@
+venv-cloud/**
+venv-client/**
+**/__pycache__/**
+.idea/**
+
+
