@@ -1,13 +1,21 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage
-from django.views.generic.edit import FormView
-from django.shortcuts import render
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import F
+from django.http import HttpResponseRedirect
+from django.shortcuts import render, get_object_or_404
 from django.urls import reverse_lazy
+from django.contrib import messages
+from django.views.generic import ListView, TemplateView
+from django.views.generic.edit import FormView, DeleteView
 
 from file_searcher.forms import FileUploadForm
-from file_searcher.tasks import upload_file_to_google_drive
-from Drives.GoogleDrive import GoogleDrive
+from file_searcher.models import FileUpload, FileAnalyzer
+from file_searcher.tasks import (
+    upload_file_to_google_drive,
+    delete_file_from_google_drive,
+    analyze_file,
+)
 
 
 def home(request):
@@ -21,14 +29,69 @@ class AddFileView(LoginRequiredMixin, FormView):
 
     def form_valid(self, form):
         uploaded_file = self.request.FILES.get("file")
-        if uploaded_file:
-            temp_file_path = default_storage.save(f"tmp/{uploaded_file.name}", ContentFile(uploaded_file.read()))
+        temp_file_path = default_storage.save(
+            f"tmp/{uploaded_file.name}", ContentFile(uploaded_file.read())
+        )
+        file_up = FileUpload(file_name=uploaded_file.name, user=self.request.user)
+        file_up.save()
 
-            upload_file_to_google_drive.delay(
-                self.request.user.email,
-                temp_file_path,
-                uploaded_file.name,
-                uploaded_file.content_type
-            )
-
+        upload_file_to_google_drive.delay(
+            file_up.id,
+            temp_file_path,
+            uploaded_file.name,
+            uploaded_file.content_type,
+        )
+        messages.success(self.request, "File sent to upload.")
         return super().form_valid(form)
+
+
+class FileUploadListView(LoginRequiredMixin, ListView):
+    model = FileUpload
+    template_name = "file_searcher/list.html"
+
+    def get_queryset(self):
+        return (
+            FileUpload.objects.select_related("user")
+            .filter(user=self.request.user)
+            .order_by(F("upload_time").desc())
+        )
+
+
+class FileUploadDeleteView(LoginRequiredMixin, DeleteView):
+    template_name = "file_searcher/delete.html"
+    model = FileUpload
+    success_url = reverse_lazy("file-upload-list")
+
+    def get_object(self, queryset=None):
+        return get_object_or_404(
+            FileUpload, pk=self.kwargs.get("pk"), user=self.request.user
+        )
+
+    def form_valid(self, form):
+        delete_file_from_google_drive.delay(self.object.id)
+        messages.info(self.request, "Job sent to delete file from GDrive")
+        return HttpResponseRedirect(self.get_success_url())
+
+
+class FileAnalyzerListView(LoginRequiredMixin, ListView):
+    model = FileAnalyzer
+    template_name = "file_searcher/analyzer/list.html"
+
+    def get_queryset(self):
+        return (
+            FileAnalyzer.objects.select_related("file")
+            .filter(file__user=self.request.user, file__id=self.kwargs.get("pk"))
+            .order_by(F("created_at").desc())
+        )
+
+
+class FileAnalyzerView(LoginRequiredMixin, TemplateView):
+
+    def get(self, *args, **kwargs):
+        file = get_object_or_404(FileUpload, id=self.kwargs.get("pk"))
+        file_analyzer = FileAnalyzer(file=file)
+        file_analyzer.save()
+
+        analyze_file.delay(file_analyzer.id)
+        messages.info(self.request, "File sent for analysis")
+        return HttpResponseRedirect(reverse_lazy("file-upload-list"))

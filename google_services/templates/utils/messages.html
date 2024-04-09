@@ -1,7 +1,20 @@
 {% if messages %}
-<ul class="messages">
     {% for message in messages %}
-    <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        <div class="alert alert-{{ message.tags }}" role="alert">
+            {{ message }}
+        </div>
     {% endfor %}
-</ul>
 {% endif %}
+
+
+{% block scripts %}
+    <script>
+    $(document).ready(function() {
+        setTimeout(function() {
+            $(".alert").fadeTo(500, 0).slideUp(500, function(){
+                $(this).remove();
+            });
+        }, 5000);
+    });
+    </script>
+{% endblock %}

@@ -25,8 +25,14 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             {% if request.user.is_authenticated %}
             <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'add-file' %}">Upload a file</a>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLinkUpload" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        File uploads
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <li><a class="dropdown-item" href="{% url 'add-file' %}">Upload a file</a></li>
+                        <li><a class="dropdown-item" href="{% url 'file-upload-list' %}">View Uploads</a></li>
+                    </ul>
                 </li>
             </ul>
             <ul class="navbar-nav ms-auto">
@@ -63,6 +69,7 @@
     {% endblock %}
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 
     {% block scripts %}
     {% endblock %}

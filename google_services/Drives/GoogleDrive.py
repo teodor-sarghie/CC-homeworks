@@ -27,14 +27,16 @@ class GoogleDrive:
     def connect(self):
 
         if self.user.token:
-            self.creds = Credentials.from_authorized_user_info(eval(self.user.token), SCOPES)
+            self.creds = Credentials.from_authorized_user_info(
+                eval(self.user.token), SCOPES
+            )
 
         if not self.creds or not self.creds.valid:
             if self.creds and self.creds.expired and self.creds.refresh_token:
                 self.creds.refresh(Request())
             else:
                 flow = InstalledAppFlow.from_client_secrets_file(
-                    os.path.join(settings.BASE_DIR, 'Drives/credentials.json'), SCOPES
+                    os.path.join(settings.BASE_DIR, "Drives/credentials.json"), SCOPES
                 )
                 self.creds = flow.run_local_server(port=0)
 
@@ -91,9 +93,9 @@ class GoogleDrive:
         def file_stream():
 
             google_docs_export_map = {
-                "application/vnd.google-apps.document": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-                "application/vnd.google-apps.spreadsheet": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                "application/vnd.google-apps.presentation": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+                "application/vnd.google-apps.document": "application/pdf",
+                "application/vnd.google-apps.spreadsheet": "application/pdf",
+                "application/vnd.google-apps.presentation": "application/pdf",
             }
 
             if file_metadata["mimeType"] in google_docs_export_map:

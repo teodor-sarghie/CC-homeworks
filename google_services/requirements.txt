@@ -16,7 +16,10 @@ google-api-python-client==2.125.0
 google-auth==2.29.0
 google-auth-httplib2==0.2.0
 google-auth-oauthlib==1.2.0
+google-cloud-language==2.13.3
 googleapis-common-protos==1.63.0
+grpcio==1.62.1
+grpcio-status==1.62.1
 httplib2==0.22.0
 idna==3.6
 kombu==5.3.6
@@ -31,7 +34,9 @@ protobuf==4.25.3
 pyasn1==0.6.0
 pyasn1_modules==0.4.0
 pyparsing==3.1.2
+PyPDF2==3.0.1
 python-dateutil==2.9.0.post0
+python-dotenv==1.0.1
 redis==5.0.3
 requests==2.31.0
 requests-oauthlib==2.0.0

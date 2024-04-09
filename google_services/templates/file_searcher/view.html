@@ -1,0 +1,94 @@
+{% extends "index.html" %}
+
+{% block content %}
+<div class="container mt-3">
+    <div class="text-center">
+        {% include "utils/messages.html" %}
+    </div>
+    <div class="card">
+        <div class="card-header">
+            Property Details
+        </div>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">ID: {{ property.id }}</li>
+            <li class="list-group-item">Starting Price: {{ property.startingPrice }}</li>
+            <li class="list-group-item">End Price: {{ property.endPrice }}</li>
+            <li class="list-group-item">Type: {{ property.type }}</li>
+            <li class="list-group-item">Address: {{ property.address }}</li>
+            <li class="list-group-item">Created At: {{ property.createdAt }}</li>
+            <li class="list-group-item">Updated At: {{ property.updatedAt }}</li>
+            <li class="list-group-item">Latitude: {{ property.lat|default:"inexistent" }}</li>
+            <li class="list-group-item">Longitude: {{ property.long|default:"inexistent" }}</li>
+            <li class="list-group-item">
+                User: {{ property.user.email }}
+            </li>
+        </ul>
+        <div class="card-footer">
+            <a id="geo-location" {% if property %} href="{% url 'geo-location' property.id %}" {% else %} href="#" {% endif %} class="btn btn-info">Generate Coordinates</a>
+            <a id="weather-button" {% if property %}  href="{% url 'weather-forecast' property.id %}" {% else %} href="#" {% endif %} class="btn btn-info">Weather Forecast</a>
+            <button id="show-on-map" class="btn btn-info">Show on Map</button>
+            <a {% if property %} href="{% url 'property-update' property.id %}" {% else %} href="#" {% endif %} class="btn btn-secondary">Update Property</a>
+            <a {% if property %} href="{% url 'property-delete' property.id %}" {% else %} href="#" {% endif %} class="btn btn-danger">Delete Property</a>
+        </div>
+        <div id="weather"></div>
+    </div>
+</div>
+
+{% if forecast %}
+<div class="container mt-3">
+    <h2>7 days Weather Forecast</h2>
+    <table class="table">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">Date</th>
+                <th scope="col">Minimum Temperature (°C)</th>
+                <th scope="col">Maximum Temperature (°C)</th>
+                <th scope="col">Condition</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for day in forecast %}
+            <tr>
+                <td>{{ day.date }}</td>
+                <td>{{ day.min_temp }}</td>
+                <td>{{ day.max_temp }}</td>
+                <td>{{ day.condition }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
+
+
+{% include "utils/map.html" %}
+
+{% endblock %}
+
+{% block scripts %}
+<script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+<script>
+    $(document).ready(function(){
+
+        $('#show-on-map').click(function (e){
+            var url = "{% if property %} {% url 'show-map' property.id %} {% else %} '' {% endif %}";
+            if(url !== ''){
+                console.log(url);
+                $.ajax({
+                    url: url,
+                    type: 'GET',
+                    success: function(result) {
+                        if(result.latitude && result.longitude){
+                            var marker = L.marker([result.latitude, result.longitude]).addTo(map);
+                            map.setView([result.latitude, result.longitude], 13);
+                        }
+                    },
+                    error: function(error){
+                        console.log('Error:', error);
+                    }
+                });
+            }
+        });
+    });
+</script>
+{% endblock %}
