@@ -6,7 +6,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse_lazy
 from django.contrib import messages
-from django.views.generic import ListView, TemplateView
+from django.views.generic import ListView, TemplateView, DetailView
 from django.views.generic.edit import FormView, DeleteView
 
 from file_searcher.forms import FileUploadForm
@@ -16,10 +16,6 @@ from file_searcher.tasks import (
     delete_file_from_google_drive,
     analyze_file,
 )
-
-
-def home(request):
-    return render(request, "index.html")
 
 
 class AddFileView(LoginRequiredMixin, FormView):
@@ -95,3 +91,39 @@ class FileAnalyzerView(LoginRequiredMixin, TemplateView):
         analyze_file.delay(file_analyzer.id)
         messages.info(self.request, "File sent for analysis")
         return HttpResponseRedirect(reverse_lazy("file-upload-list"))
+
+
+class RepeatFileAnalysisView(LoginRequiredMixin, TemplateView):
+
+    def get(self, *args, **kwargs):
+        file_analyzer = get_object_or_404(FileAnalyzer, id=self.kwargs.get("pk"))
+        analyze_file.delay(file_analyzer.id)
+        messages.info(self.request, "File sent for analysis")
+        return HttpResponseRedirect(
+            reverse_lazy("file-analyze-list", kwargs={"pk": file_analyzer.file.id})
+        )
+
+
+class FileAnalyzerDetailView(LoginRequiredMixin, DetailView):
+    model = FileAnalyzer
+    template_name = "file_searcher/analyzer/view.html"
+
+    def get_object(self, queryset=None):
+        return get_object_or_404(FileAnalyzer, id=self.kwargs.get("pk"))
+
+
+class FileAnalyzerDeleteView(LoginRequiredMixin, DeleteView):
+    template_name = "file_searcher/analyzer/delete.html"
+    model = FileAnalyzer
+
+    def get_object(self, queryset=None):
+        return get_object_or_404(
+            FileAnalyzer, pk=self.kwargs.get("pk"), file__user=self.request.user
+        )
+
+    def form_valid(self, form):
+        success_url = reverse_lazy(
+            "file-analyze-list", kwargs={"pk": self.object.file.id}
+        )
+        self.object.delete()
+        return HttpResponseRedirect(success_url)

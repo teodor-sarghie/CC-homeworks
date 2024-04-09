@@ -74,9 +74,12 @@ def analyze_file(file_analysis_id):
             text = extract_text_from_pdf(file_path)
         except Exception as e:
             file_analyzer.status = FileAnalyzer.Status.EXTRACT_TEXT_FAIL
-            file_analyzer.error = str(e)
+            file_analyzer.error = "The PDF couldn't be extracted. Possibly due to encrypted file or corrupted PDF."
+            file_analyzer.error_analyzer = None
+            file_analyzer.error_classifier = None
             file_analyzer.save()
             return
+
         sentiment = None
         categories = None
         try:
@@ -85,6 +88,9 @@ def analyze_file(file_analysis_id):
             file_analyzer.status = FileAnalyzer.Status.PARTIAL_SUCCESS
             file_analyzer.error_analyzer = str(e)
             file_analyzer.save()
+        else:
+            file_analyzer.error_analyzer = None
+            file_analyzer.save()
 
         try:
             categories = classify_text(text)
@@ -92,9 +98,14 @@ def analyze_file(file_analysis_id):
             file_analyzer.status = FileAnalyzer.Status.FAILED
             file_analyzer.error_classifier = str(e)
             file_analyzer.save()
+        else:
+            file_analyzer.error_classifier = None
+            file_analyzer.save()
+            logging.error(f"categories {categories}")
 
         if sentiment is not None and categories is not None:
             file_analyzer.status = FileAnalyzer.Status.SUCCESS
+
         file_analyzer.sentiment = sentiment
         file_analyzer.categories = categories
         file_analyzer.save()

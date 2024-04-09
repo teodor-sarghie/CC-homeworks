@@ -1,0 +1,30 @@
+{% extends "index.html" %}
+
+{% block content %}
+<div class="container mt-3">
+    <div class="text-center">
+        {% include "utils/messages.html" %}
+    </div>
+    <div class="card">
+        <div class="card-header">
+            File Analysis details
+        </div>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">ID: {{ object.id }}</li>
+            <li class="list-group-item">File name: {{ object.file }}</li>
+            <li class="list-group-item">User: {{ object.file.user }}</li>
+            <li class="list-group-item">Sentiment: {{ object.sentiment }}</li>
+            <li class="list-group-item">Categories: {{ object.categories }}</li>
+            <li class="list-group-item">Broad error: {{ object.error|default:"No errors" }}</li>
+            <li class="list-group-item">Sentiment Analyzer Error: {{ object.error_analyzer|default:"No errors" }}</li>
+            <li class="list-group-item">Text Classifier Error: {{ object.error_classifier|default:"No errors" }}</li>
+            <li class="list-group-item">Status: {{ object.status }}</li>
+            <li class="list-group-item">Created At: {{ object.created_at }}</li>
+            <li class="list-group-item">Updated At: {{ object.updated_at }}</li>
+        </ul>
+        <div class="card-footer">
+            <a href="{% url 'file-analyzer-delete' object.id %}" class="btn btn-danger">Delete Analysis</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

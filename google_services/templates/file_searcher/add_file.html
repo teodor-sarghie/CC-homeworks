@@ -17,6 +17,13 @@
                         <div class="form-group mb-3 mt-3">
                             <label for="id_file">File</label>
                             {{ form.file }}
+                            {% if form.file.errors %}
+                                <div class="alert alert-danger mt-2">
+                                    {% for error in form.file.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
                         </div>
                         <button type="submit" class="btn btn-primary">Upload</button>
                         <a href="{% url 'home-page' %}" class="btn btn-secondary">Back to home</a>

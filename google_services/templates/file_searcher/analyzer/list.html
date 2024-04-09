@@ -1,12 +1,14 @@
 {% extends "index.html" %}
 
 {% block content %}
-<div class="text-center">
-    {% include "utils/messages.html" %}
-</div>
+
 <div class="container mt-5">
+    <div class="text-center">
+        {% include "utils/messages.html" %}
+    </div>
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h2>File Analysis list</h2>
+        <a href="{% url 'file-upload-list' %}" class="btn btn-success">Back</a>
     </div>
     <div class="table-responsive">
         <table class="table">
@@ -14,14 +16,9 @@
                 <tr>
                     <th scope="col">ID</th>
                     <th scope="col">File name</th>
-                    <th scope="col">User</th>
-                    <th scope="col">Sentiment</th>
-                    <th scope="col">Categories</th>
-                    <th scope="col">Error Sentiment Analyzer</th>
-                    <th scope="col">Error Text Classifier</th>
-                    <th scope="col">Broad Error</th>
                     <th scope="col">Status</th>
                     <th scope="col">Created at</th>
+                    <th scope="col">Updated at</th>
                     <th scope="col">Actions</th>
                 </tr>
             </thead>
@@ -30,15 +27,12 @@
                 <tr>
                     <td>{{ file_analyzer.id }}</td>
                     <td>{{ file_analyzer.file }}</td>
-                    <td>{{ file_analyzer.sentiment }}</td>
-                    <td>{{ file_analyzer.categories }}</td>
-                    <td>{{ file_analyzer.error_analyzer }}</td>
-                    <td>{{ file_analyzer.error_classifier }}</td>
-                    <td>{{ file_analyzer.error }}</td>
                     <td>{{ file_analyzer.status }}</td>
                     <td>{{ file_analyzer.created_at }}</td>
+                    <td>{{ file_analyzer.updated_at }}</td>
                     <td>
-                        <a href="#" class="btn btn-danger">Delete</a>
+                        <a href="{% url 'file-analyze-repeat' file_analyzer.id %}" class="btn btn-success">Repeat Analysis</a>
+                        <a href="{% url 'file-analyzer-view' file_analyzer.id %}" class="btn btn-info">View details</a>
                     </td>
                 </tr>
                 {% empty %}

@@ -41,7 +41,8 @@ class FileAnalyzer(models.Model):
     error_classifier = models.CharField(max_length=1024, blank=True, null=True)
     sentiment = models.CharField(max_length=2048, blank=True, null=True)
     categories = models.CharField(max_length=2048, blank=True, null=True)
-    created_at = models.DateTimeField(default=timezone.now())
+    created_at = models.DateTimeField(default=timezone.now)
+    updated_at = models.DateTimeField(auto_now=True)
     error = models.CharField(max_length=1024, blank=True, null=True)
     status = models.CharField(
         choices=Status.choices, default=Status.PROCESSING, max_length=30

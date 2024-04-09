@@ -1,3 +1,4 @@
+import logging
 import os.path
 import io
 from django.conf import settings
@@ -96,8 +97,9 @@ class GoogleDrive:
                 "application/vnd.google-apps.document": "application/pdf",
                 "application/vnd.google-apps.spreadsheet": "application/pdf",
                 "application/vnd.google-apps.presentation": "application/pdf",
+                "application/vnd.openxmlformats-officedocument.wordprocessingml.document": "application/pdf",
             }
-
+            logging.error(f"WTF HERE {file_metadata['mimeType']}")
             if file_metadata["mimeType"] in google_docs_export_map:
                 export_mime_type = google_docs_export_map[file_metadata["mimeType"]]
                 request = service.files().export_media(

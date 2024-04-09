@@ -18,9 +18,12 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
+from google_services.views import home
+
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path("", home, name="home-page"),
     path("files/", include("file_searcher.urls")),
     path("users/", include("users.urls")),
 ]
