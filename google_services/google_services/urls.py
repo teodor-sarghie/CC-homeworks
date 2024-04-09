@@ -18,7 +18,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
-from google_services.views import home
+from google_services.views import home,health
 
 
 urlpatterns = [
@@ -26,4 +26,5 @@ urlpatterns = [
     path("", home, name="home-page"),
     path("files/", include("file_searcher.urls")),
     path("users/", include("users.urls")),
+    path("health/", health, name="home-page"),
 ]
