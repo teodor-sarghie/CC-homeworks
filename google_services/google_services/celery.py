@@ -4,7 +4,18 @@ from celery import Celery
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "google_services.settings")
 
-app = Celery("google_services")
+
+GOOGLE_REDIS = os.getenv("REDISGOOGLE", None)
+GOOGLE_REDIS_PORT = os.getenv("REDISPORTGOOGLE", None)
+
+if GOOGLE_REDIS is not None:
+    app = Celery(
+        "google_services",
+        broker=f"redis://{GOOGLE_REDIS}:{GOOGLE_REDIS_PORT}/0",
+        backend=f"redis://{GOOGLE_REDIS}:{GOOGLE_REDIS_PORT}/0",
+    )
+else:
+    app = Celery("google_services")
 
 # Using a string here means the worker doesn't have to serialize
 # the configuration object to child processes.

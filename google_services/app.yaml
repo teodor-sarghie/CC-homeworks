@@ -1,0 +1,23 @@
+runtime: python
+env: flex
+entrypoint: gunicorn -b :8080 google_services.wsgi:application --timeout 650
+
+beta_settings:
+    cloud_sql_instances: cloudcomputingtema3-419716:europe-central2:default-postgres
+
+runtime_config:
+    operating_system: ubuntu22 
+
+env_variables:
+    REDISGOOGLE: '10.195.110.19'
+    REDISPORTGOOGLE: '6379'
+    GS_BUCKET_NAME: 'cloud-homework-bucket-1'
+
+resources:
+  cpu: 4
+  memory_gb: 16
+  disk_size_gb: 30
+  volumes:
+  - name: ramdisk1
+    volume_type: tmpfs
+    size_gb: 2
