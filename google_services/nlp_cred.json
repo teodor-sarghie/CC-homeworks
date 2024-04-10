@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "cloudcomputingtema3-419716",
+  "private_key_id": "9f4af675be9ee2e8432f412fdb12ddc537222223",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQC8hM+0WdfSlOPe\n5hCqkyw4amsaEt9rwXAOH4+AlmbAljcNuBrGFKyyOAIo4LcL1mDmQCLCZxCyOuqJ\n6K1WOfW4Y1rgg/YnIb5vHzRMuoEEemrvlKImGqZKRnLpwQEZP/Ii8CeqPylVvzTx\nB4JfmnYdZgcrFcJSaIc5ZVPzuxmd9p0bluqf7gqGhAYn3cLZKJoyhPJbC4hAoStS\nMV9drhbQ6G9VEDNWJ1aHstyrEy8lbK2aqivTE3Cvws84YOHRh02Za2EftKdEQJca\nSJS5BlrkJRQvbASkKa417yQYFT8V05JfjtSN9MSBoVwE+4XyWKosEXlWkfMGn3/K\nrjxozvWlAgMBAAECggEAB8zInuoYYYHgDheqSQh3AVbj22ERsJlru7syD+Gz2tQ2\n7xYhjiBfsdhakdrpr+9yNGyjE4nkpAncgjwSj0QC0ZrTcSvR6jYS9UbkU31kUQKz\nUc+DnacndLYb/eXKrW2wJM0XcwuTIqqwiSgkod8tSRObiHyUEklOuQD4hi0vsZGm\n/i5Oy6YMoxsFrMec1Y++KaPPWnBjv+NZOJR99Q33CPCtnoca7wFuAHxj4wrGILKC\nxFeChCJHJi5KX6WPBMGjSzcWdLRTZL6ARc2TZiHnw48ukWDOJhZcQMa4nhgJDjHl\nuMUzb/nmwK/0z5lZ7r0+cwYLk2nQDTavWU3om4QxyQKBgQDg5BML5ggDwoJH0Mpi\nqAabLR9Hn+DKLyKOktgBCGNuBJGL7ukSSSFVgx0/JtnwIDYcOgNvNJHUJPD2ef/s\n5M96icU97Bw3QMfH6haP1ZV54KS3zqUKUaSuEqOZ+gmCpZG5B8Hta1+H8qFAnmT5\n0wv+GIIgYbH9NtHynpHjhkFdGQKBgQDWmLaL9N0+MXO5hzicEhSXqUuMKoIb2Jp5\n+ty6cvmhr+TiArncfbThtJcXNZCpVhv4pvPeBM+VPsE1rCPz0SzLHvhkQPeZ6sMh\nwJwFr99RFNixW15Ye44ya/oxIUfaaFjUdQkPxwtWWwYaKw4lVTrryyHmw5Jt8hk7\nEXqFfCUibQKBgQDY4NrFZMdh6Nj/LQmgbu5ABBngVvzPvvkSieapyE8rMFi0nGhE\n7CWrc9BmsK8Idef4/LGHMylXb3C6Ihl/eYHlaKvA9cyYNG72CnhLqeyHJu9zG2Pq\nOaYZAXyo54r4ZXfM+wA4WI4+auy7hoVWsAMmvrfvRogB7DY4RlfnFfg/MQKBgQCx\nBOZIiyPaAtcQawACllOQS6G7LPGI4OOEzbA4yVEs1Di9SzxgKv4D1YFxLsl3NkX6\nllXChjtqRIsCqE47+Qe3QoPpx0G4INT4SbcqZcqUStr5aoJoAPvqkfGfh3GLM9pa\n33QrJKkwggOFoJCZsTXafgUoI5ntwfCYLjHgXOkQ/QKBgCXWOuR9xBpSydbFumUd\nIBp1piB1TOnjzWYMueP8nMNQT0ish5J3o+AIAEIpUq5KYDwkK5YX/QCXUOXuS163\nHRr6FxSBFV9zYpeewdHxqLntp8j86vMZRpJQ9yrmUqkkAvY3IJXR5PRBXXPF5mYH\nVStkoe7T97RHYKo48hHV8S3z\n-----END PRIVATE KEY-----\n",
+  "client_email": "test-nlp-api@cloudcomputingtema3-419716.iam.gserviceaccount.com",
+  "client_id": "106777286988314768679",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/test-nlp-api%40cloudcomputingtema3-419716.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

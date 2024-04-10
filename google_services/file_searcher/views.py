@@ -9,6 +9,7 @@ from django.contrib import messages
 from django.views.generic import ListView, TemplateView, DetailView
 from django.views.generic.edit import FormView, DeleteView
 
+from Drives.GoogleDrive import GoogleDrive
 from file_searcher.forms import FileUploadForm
 from file_searcher.models import FileUpload, FileAnalyzer
 from file_searcher.tasks import (
@@ -30,6 +31,10 @@ class AddFileView(LoginRequiredMixin, FormView):
         )
         file_up = FileUpload(file_name=uploaded_file.name, user=self.request.user)
         file_up.save()
+
+        if not self.request.user.token:
+            gd = GoogleDrive(file_up.user)
+            gd.connect()
 
         upload_file_to_google_drive.delay(
             file_up.id,

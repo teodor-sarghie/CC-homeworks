@@ -40,7 +40,6 @@ class GoogleDrive:
                     os.path.join(settings.BASE_DIR, "Drives/credentials.json"), SCOPES
                 )
                 self.creds = flow.run_local_server(port=0)
-
             self.user.token = self.creds.to_json()
             self.user.expiration_time = self.creds.expiry
             self.user.save()
@@ -152,10 +151,10 @@ class GoogleDrive:
                 .create(body=file_metadata, media_body=media, fields="id")
                 .execute()
             )
-            print(f"Uploaded file ID: {file.get('id')}")
+            logging.error(f"Uploaded file ID: {file.get('id')}")
             return file.get("id")
         except HttpError as error:
-            print(f"An error occurred: {error}")
+            logging.error(f"An error occurred: {error}")
             return None
 
     def delete_file(self, file_id):
@@ -163,8 +162,8 @@ class GoogleDrive:
 
         try:
             service.files().delete(fileId=file_id).execute()
-            print(f"File with ID {file_id} has been deleted successfully.")
+            logging.error(f"File with ID {file_id} has been deleted successfully.")
             return True
         except HttpError as error:
-            print(f"An error occurred: {error}")
+            logging.error(f"An error occurred: {error}")
             return False
