@@ -30,7 +30,8 @@ def upload_file_to_google_drive(file_id, file_path, file_name, mime_type):
         file_up.google_drive_id = file_id
         file_up.upload_time = timezone.now()
         file_up.status = FileUpload.Status.SUCCESS
-    except Exception:
+    except Exception as e:
+        logging.error(f"ERROR WHILE UPLOADING FILE {e}")
         file_up.status = FileUpload.Status.FAILED
     finally:
         file_up.save()
@@ -43,9 +44,13 @@ def delete_file_from_google_drive(file_id):
         gd = GoogleDrive(file.user)
         gd.connect()
         gd.delete_file(file.google_drive_id)
-    except Exception:
-        file.status = FileUpload.Status.FAILED_DELETION
-        file.save()
+    except Exception as e:
+        logging.error(f"CE ERROR MEA {e}")
+        if file.google_drive_id is None:
+            file.delete()
+        else:
+            file.status = FileUpload.Status.FAILED_DELETION
+            file.save()
     else:
         file.delete()
 
@@ -62,12 +67,15 @@ def analyze_file(file_analysis_id):
     except Exception as e:
         file_analyzer.status = FileAnalyzer.Status.DOWNLOAD_FAIL
         file_analyzer.save()
+        logging.error(f"CE EROARE 1 {e}")
+
     else:
         try:
             file_path = save_temporary_file(file_stream, file_analyzer.file.file_name)
         except Exception:
             file_analyzer.status = FileAnalyzer.Status.SAVE_LOCAL_FILE_FAIL
             file_analyzer.save()
+            logging.error(f"CE EROARE 2 {e}")
             return
 
         try:
@@ -78,6 +86,7 @@ def analyze_file(file_analysis_id):
             file_analyzer.error_analyzer = None
             file_analyzer.error_classifier = None
             file_analyzer.save()
+            logging.error(f"CE EROARE 3 {e}")
             return
 
         sentiment = None
@@ -88,6 +97,7 @@ def analyze_file(file_analysis_id):
             file_analyzer.status = FileAnalyzer.Status.PARTIAL_SUCCESS
             file_analyzer.error_analyzer = str(e)
             file_analyzer.save()
+            logging.error(f"CE EROARE 4 {e}")
         else:
             file_analyzer.error_analyzer = None
             file_analyzer.save()
@@ -98,6 +108,7 @@ def analyze_file(file_analysis_id):
             file_analyzer.status = FileAnalyzer.Status.FAILED
             file_analyzer.error_classifier = str(e)
             file_analyzer.save()
+            logging.error(f"CE EROARE 5 {e}")
         else:
             file_analyzer.error_classifier = None
             file_analyzer.save()

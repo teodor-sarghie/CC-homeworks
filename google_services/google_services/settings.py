@@ -33,7 +33,10 @@ SECRET_KEY = "django-insecure-nxc%+k*m6%ps=tlpj$)%f@p0=guhi0f^@tsrl+8$5e-rua21mx
 DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
-CSRF_TRUSTED_ORIGINS = ["https://cloudcomputingtema3-419716.lm.r.appspot.com", "https://*.appspot.com"]
+CSRF_TRUSTED_ORIGINS = [
+    "https://cloudcomputingtema3-419716.lm.r.appspot.com",
+    "https://*.appspot.com",
+]
 
 
 # Application definition
