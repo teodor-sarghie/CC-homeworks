@@ -29,20 +29,14 @@ class AddFileView(LoginRequiredMixin, FormView):
         temp_file_path = default_storage.save(
             f"tmp/{uploaded_file.name}", ContentFile(uploaded_file.read())
         )
-        file_up = FileUpload(file_name=uploaded_file.name, user=self.request.user)
-        file_up.save()
-
-        if not self.request.user.token:
-            gd = GoogleDrive(file_up.user)
-            gd.connect()
-
-        upload_file_to_google_drive.delay(
-            file_up.id,
-            temp_file_path,
-            uploaded_file.name,
-            uploaded_file.content_type,
+        file_up = FileUpload(
+            file_name=uploaded_file.name,
+            user=self.request.user,
+            file_path=temp_file_path,
+            status=FileUpload.Status.SUCCESS,
         )
-        messages.success(self.request, "File sent to upload.")
+        file_up.save()
+        messages.success(self.request, "File uploaded.")
         return super().form_valid(form)
 
 
@@ -69,8 +63,10 @@ class FileUploadDeleteView(LoginRequiredMixin, DeleteView):
         )
 
     def form_valid(self, form):
-        delete_file_from_google_drive.delay(self.object.id)
-        messages.info(self.request, "Job sent to delete file from GDrive")
+        self.object = self.get_object()
+        default_storage.delete(self.object.file_path)
+        self.object.delete()
+        messages.info(self.request, "File deleted")
         return HttpResponseRedirect(self.get_success_url())
 
 

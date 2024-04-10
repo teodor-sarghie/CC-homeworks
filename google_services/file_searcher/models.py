@@ -11,7 +11,7 @@ class FileUpload(models.Model):
         FAILED_DELETION = "failed_deletion"
 
     file_name = models.CharField(max_length=256)
-    google_drive_id = models.CharField(max_length=64, blank=True, null=True)
+    file_path = models.CharField(max_length=64, blank=True, null=True)
     upload_time = models.DateTimeField(default=timezone.now())
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user")
     status = models.CharField(

@@ -97,7 +97,7 @@ WSGI_APPLICATION = "google_services.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "cloud-homework",
+        "NAME": "postgres",
         "USER": "postgres",
         "PASSWORD": "password",
         "HOST": "/cloudsql/cloudcomputingtema3-419716:europe-central2:default-postgres",
