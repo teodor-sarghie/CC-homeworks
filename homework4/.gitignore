@@ -1,0 +1,7 @@
+venv-cloud/**
+venv-client/**
+**/__pycache__/**
+.idea/**
+
+Drives/token.json
+Drives/__pycache__/**

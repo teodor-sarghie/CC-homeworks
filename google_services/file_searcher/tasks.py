@@ -1,5 +1,7 @@
 import logging
+from io import BytesIO
 
+import pdfplumber
 from django.core.files.storage import default_storage
 
 from Drives.GoogleDrive import GoogleDrive
@@ -60,63 +62,52 @@ def analyze_file(file_analysis_id):
     file_analyzer = FileAnalyzer.objects.select_related("file", "file__user").get(
         id=file_analysis_id
     )
-    try:
-        gd = GoogleDrive(file_analyzer.file.user)
-        gd.connect()
-        file_stream = gd.download_file(file_analyzer.file.google_drive_id)
-    except Exception as e:
-        file_analyzer.status = FileAnalyzer.Status.DOWNLOAD_FAIL
-        file_analyzer.save()
-        logging.error(f"CE EROARE 1 {e}")
+    file_path = file_analyzer.file.file_path
 
-    else:
-        try:
-            file_path = save_temporary_file(file_stream, file_analyzer.file.file_name)
-        except Exception:
-            file_analyzer.status = FileAnalyzer.Status.SAVE_LOCAL_FILE_FAIL
-            file_analyzer.save()
-            logging.error(f"CE EROARE 2 {e}")
-            return
+    text = ""
+    with default_storage.open(file_path, "rb") as file:
+        pdf_bytes = file.read()
 
+        pdf_bio = BytesIO(pdf_bytes)
         try:
-            text = extract_text_from_pdf(file_path)
+            with pdfplumber.open(pdf_bio) as pdf:
+                for page in pdf.pages:
+                    page_text = page.extract_text() or ""
+                    text += page_text + "\n"
         except Exception as e:
+            file_analyzer.error = "Possibly encrypted PDF or corrupted"
             file_analyzer.status = FileAnalyzer.Status.EXTRACT_TEXT_FAIL
-            file_analyzer.error = "The PDF couldn't be extracted. Possibly due to encrypted file or corrupted PDF."
-            file_analyzer.error_analyzer = None
-            file_analyzer.error_classifier = None
             file_analyzer.save()
-            logging.error(f"CE EROARE 3 {e}")
             return
 
-        sentiment = None
-        categories = None
-        try:
-            sentiment = extract_sentiment(text)
-        except Exception as e:
-            file_analyzer.status = FileAnalyzer.Status.PARTIAL_SUCCESS
-            file_analyzer.error_analyzer = str(e)
-            file_analyzer.save()
-            logging.error(f"CE EROARE 4 {e}")
-        else:
-            file_analyzer.error_analyzer = None
-            file_analyzer.save()
-
-        try:
-            categories = classify_text(text)
-        except Exception as e:
-            file_analyzer.status = FileAnalyzer.Status.FAILED
-            file_analyzer.error_classifier = str(e)
-            file_analyzer.save()
-            logging.error(f"CE EROARE 5 {e}")
-        else:
-            file_analyzer.error_classifier = None
-            file_analyzer.save()
-            logging.error(f"categories {categories}")
-
-        if sentiment is not None and categories is not None:
-            file_analyzer.status = FileAnalyzer.Status.SUCCESS
-
-        file_analyzer.sentiment = sentiment
-        file_analyzer.categories = categories
+    sentiment = None
+    categories = None
+    try:
+        sentiment = extract_sentiment(text)
+    except Exception as e:
+        file_analyzer.status = FileAnalyzer.Status.PARTIAL_SUCCESS
+        file_analyzer.error_analyzer = str(e)
         file_analyzer.save()
+        logging.error(f"CE EROARE 4 {e}")
+    else:
+        file_analyzer.error_analyzer = None
+        file_analyzer.save()
+
+    try:
+        categories = classify_text(text)
+    except Exception as e:
+        file_analyzer.status = FileAnalyzer.Status.FAILED
+        file_analyzer.error_classifier = str(e)
+        file_analyzer.save()
+        logging.error(f"CE EROARE 5 {e}")
+    else:
+        file_analyzer.error_classifier = None
+        file_analyzer.save()
+        logging.error(f"categories {categories}")
+
+    if sentiment is not None and categories is not None:
+        file_analyzer.status = FileAnalyzer.Status.SUCCESS
+
+    file_analyzer.sentiment = sentiment
+    file_analyzer.categories = categories
+    file_analyzer.save()
