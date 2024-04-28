@@ -1,0 +1,47 @@
+{% extends "index.html" %}
+
+{% block content %}
+
+<div class="container mt-5">
+    <div class="text-center">
+        {% include "utils/messages.html" %}
+    </div>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>File Analysis list</h2>
+        <a href="{% url 'file-upload-list' %}" class="btn btn-success">Back</a>
+    </div>
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">File name</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Created at</th>
+                    <th scope="col">Updated at</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for file_analyzer in object_list %}
+                <tr>
+                    <td>{{ file_analyzer.id }}</td>
+                    <td>{{ file_analyzer.file }}</td>
+                    <td>{{ file_analyzer.status }}</td>
+                    <td>{{ file_analyzer.created_at }}</td>
+                    <td>{{ file_analyzer.updated_at }}</td>
+                    <td>
+                        <a href="{% url 'file-analyze-repeat' file_analyzer.id %}" class="btn btn-success">Repeat Analysis</a>
+                        <a href="{% url 'file-analyzer-view' file_analyzer.id %}" class="btn btn-info">View details</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4">No files analyzed.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

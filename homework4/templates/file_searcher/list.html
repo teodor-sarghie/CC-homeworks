@@ -1,0 +1,48 @@
+{% extends "index.html" %}
+
+{% block content %}
+<div class="text-center">
+    {% include "utils/messages.html" %}
+</div>
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>File upload list</h2>
+    </div>
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">File name</th>
+                    <th scope="col">File path</th>
+                    <th scope="col">User</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Uploaded at</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for file_upload in object_list %}
+                <tr>
+                    <td>{{ file_upload.id }}</td>
+                    <td>{{ file_upload.file_name }}</td>
+                    <td>{{ file_upload.file_path }}</td>
+                    <td>{{ file_upload.user }}</td>
+                    <td>{{ file_upload.status }}</td>
+                    <td>{{ file_upload.upload_time }}</td>
+                    <td>
+                        <a href="{% url 'file-analyze' file_upload.id %}" class="btn btn-success">Analyze</a>
+                        <a href="{% url 'file-analyze-list' file_upload.id %}" class="btn btn-info">View Analysis</a>
+                        <a href="{% url 'file-upload-delete' file_upload.id %}" class="btn btn-danger">Delete</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4">No files uploaded.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
